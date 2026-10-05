@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python Midterm Oefenen</title>
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: één leeskolom, eerst spiekbrief (6 blokken), dan oefentoets met directe uitleg per vraag */
+:root{
+  --bg:#f5f7fb; --surface:#ffffff; --fg:#17202e; --muted:#5a6578; --line:#d9dfea;
+  --accent:#2457d6; --accent-soft:#e6edff; --code-bg:#eef1f7;
+  --good:#18794e; --good-soft:#e3f5ec; --bad:#c2352b; --bad-soft:#fdeceb;
+  --display:"Bricolage Grotesque", system-ui, sans-serif;
+  --body:"Source Sans 3", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10151f; --surface:#171e2b; --fg:#e7ebf3; --muted:#9aa5b8; --line:#2a3446;
+  --accent:#7ea2ff; --accent-soft:#1d2a4a; --code-bg:#0c1119;
+  --good:#5fd39b; --good-soft:#12301f; --bad:#ff8a80; --bad-soft:#3a1714; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10151f; --surface:#171e2b; --fg:#e7ebf3; --muted:#9aa5b8; --line:#2a3446;
+  --accent:#7ea2ff; --accent-soft:#1d2a4a; --code-bg:#0c1119;
+  --good:#5fd39b; --good-soft:#12301f; --bad:#ff8a80; --bad-soft:#3a1714; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.55}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:32px 64px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:2.2rem;font-weight:800}
+h2{font-size:1.6rem;font-weight:800;margin-top:48px}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:0}
+.lead{color:var(--muted);margin-top:8px;max-width:62ch}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+nav a{font-weight:600;color:var(--accent);background:var(--accent-soft);padding:6px 14px;border-radius:999px;text-decoration:none}
+nav a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+code,pre{font-family:var(--mono);font-size:.88em}
+code{background:var(--code-bg);padding:1px 6px;border-radius:4px}
+pre{background:var(--code-bg);padding:14px 16px;border-radius:8px;overflow-x:auto;margin:0;line-height:1.5}
+pre code{background:none;padding:0}
+.routine{margin-top:24px;border:2px solid var(--accent);border-radius:10px;padding:16px 18px;background:var(--surface);display:grid;gap:8px}
+.routine ol{margin:0;padding-left:22px;display:grid;gap:4px}
+.eyebrow{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.topic{margin-top:28px;display:grid;gap:10px}
+.topic ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.trap{border-left:3px solid var(--bad);padding:6px 12px;background:var(--bad-soft);border-radius:0 6px 6px 0}
+.trap strong{color:var(--bad)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;font-family:var(--mono);font-size:.82rem;font-variant-numeric:tabular-nums}
+td,th{border:1px solid var(--line);padding:4px 8px;text-align:center}
+th{color:var(--muted);font-weight:400}
+hr{border:0;border-top:1px solid var(--line);margin:48px 0 0}
+.score{position:sticky;top:env(safe-area-inset-top,0px);z-index:2;background:var(--bg);padding-block:12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px}
+.score b{font-family:var(--display);font-size:1.3rem;font-variant-numeric:tabular-nums}
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:6px 14px;border-radius:8px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.q{margin-top:28px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:12px;min-width:0}
+.q h3 span{color:var(--muted);font-weight:600;font-family:var(--body);font-size:.85rem;margin-left:6px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.opt{font:inherit;text-align:left;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);border-radius:8px;padding:10px 12px;cursor:pointer;display:flex;gap:8px;align-items:baseline}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt .l{font-weight:700;color:var(--muted)}
+.opt.good{border-color:var(--good);background:var(--good-soft)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.fb{border-radius:8px;padding:12px 14px;display:grid;gap:6px;background:var(--code-bg)}
+.fb .verdict{font-weight:700}
+.fb.ok .verdict{color:var(--good)} .fb.no .verdict{color:var(--bad)}
+.fb ol{margin:0;padding-left:20px;display:grid;gap:2px}
+.hint{font-size:.9rem;color:var(--muted)}
+.end{margin-top:32px;text-align:center;display:grid;gap:8px;justify-items:center}
+@media (prefers-reduced-motion:no-preference){.fb{animation:in .2s ease-out}@keyframes in{from{transform:translateY(-4px)}to{transform:none}}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <p class="eyebrow">Programmeren · Python</p>
+  <h1>Python Midterm Oefenen</h1>
+  <p class="lead">Spiekbrief van alle 20 opdrachten en een oefentoets die elke ronde 20 nieuwe vragen verzint, één per opdracht. Eerst even de samenvatting lezen, dan de toets maken. Pak er een papiertje bij.</p>
+  <nav><a href="#samenvatting">Samenvatting</a><a href="#toets">Oefentoets</a></nav>
+
+  <div class="routine">
+    <p class="eyebrow">Jouw vaste routine bij elke vraag</p>
+    <ol>
+      <li>Schrijf de beginwaarden op (x = ..., y = ...).</li>
+      <li>Loop regel voor regel van boven naar beneden. Schrijf elke verandering op.</li>
+      <li>Bij een <code>if</code>: schrijf "waar" of "niet waar" erbij.</li>
+      <li>Pas aan het eind: zoek je antwoord tussen de opties.</li>
+    </ol>
+    <p class="hint">Al je fouten tot nu toe kwamen door een overgeslagen stap, niet doordat je de stof niet snapte.</p>
+  </div>
+
+  <h2 id="samenvatting">Samenvatting</h2>
+
+  <section class="topic">
+    <h3>1. Variabelen: een doosje met een waarde</h3>
+    <ul>
+      <li><code>x = 5</code> stopt 5 in het doosje x. Python leest <b>van boven naar beneden</b>.</li>
+      <li>Een variabele onthoudt een <b>waarde</b>, geen formule. Na <code>b = a * 2</code> verandert b niet meer als a verandert.</li>
+      <li>Rekenvolgorde: eerst <code>*</code> en <code>/</code>, dan <code>+</code> en <code>-</code>.</li>
+      <li><code>/</code> geeft altijd een kommagetal: <code>4 / 4</code> = <code>1.0</code>. <code>//</code> geeft een heel getal: <code>4 // 4</code> = <code>1</code>.</li>
+      <li>Kommagetallen zijn niet altijd precies: <code>0.3 * 9</code> = <code>2.6999999999999997</code>.</li>
+    </ul>
+  </section>
+
+  <section class="topic">
+    <h3>2. if / elif / else: één wegwijzer, één route</h3>
+<pre><code>if x &gt; 2:        # als ...
+    ...
+elif x &lt; 2:      # anders, als ...
+    ...
+else:            # in alle andere gevallen
+    ...</code></pre>
+    <ul>
+      <li>Python kiest <b>precies één</b> route per wegwijzer. Daarna wordt de rest overgeslagen.</li>
+      <li>Ingesprongen code (de spaties) hoort bij de regel erboven met de <code>:</code>.</li>
+      <li><code>==</code> is een vraag ("is gelijk?"), <code>=</code> stopt iets in een doosje.</li>
+      <li><code>&lt;=</code> kleiner of gelijk, <code>&gt;=</code> groter of gelijk. <code>or</code>: één van de twee moet waar zijn. <code>and</code>: allebei.</li>
+    </ul>
+    <p class="trap"><strong>Valkuil:</strong> elke nieuwe <code>if</code> start een <b>nieuwe wegwijzer</b> en wordt altijd opnieuw gecheckt. <code>elif</code>/<code>else</code> horen bij de <code>if</code> direct erboven.</p>
+  </section>
+
+  <section class="topic">
+    <h3>3. Tekst vergelijken</h3>
+    <ul>
+      <li>Tekst tussen <code>" "</code> heet een <b>string</b>. <code>print(...)</code> zet iets op het scherm.</li>
+      <li><code>&lt;</code> bij tekst = "komt eerder in het alfabet".</li>
+      <li>Python vergelijkt <b>letter voor letter</b> tot er een verschil is: <code>"Sam" &lt; "Sara"</code> is waar (m vóór r).</li>
+      <li>Is één woord eerder op? Dan komt het <b>kortere</b> eerst: <code>"E" &lt; "Emily"</code>.</li>
+    </ul>
+    <p class="trap"><strong>Valkuil:</strong> hoofdletters komen vóór kleine letters. <code>"Z" &lt; "a"</code> is waar.</p>
+  </section>
+
+  <section class="topic">
+    <h3>4. Indexing: één letter pakken</h3>
+    <div class="tbl"><table>
+      <tr><th>letter</th><td>P</td><td>y</td><td>t</td><td>h</td><td>o</td><td>n</td></tr>
+      <tr><th>van voren</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+      <tr><th>van achteren</th><td>-6</td><td>-5</td><td>-4</td><td>-3</td><td>-2</td><td>-1</td></tr>
+    </table></div>
+    <ul>
+      <li>Van voren tellen begint bij <b>0</b>. Van achteren begint bij <b>-1</b> (er is geen -0).</li>
+      <li>Laatste index = lengte min 1. Bij een woord van 6 letters geeft <code>woord[6]</code> een foutmelding.</li>
+    </ul>
+  </section>
+
+  <section class="topic">
+    <h3>5. Slicing: een stuk pakken met [start:stop:stap]</h3>
+    <ul>
+      <li><b>Start doet mee, stop doet niet mee.</b> "Tot, niet tot en met." <code>"Python"[1:4]</code> = <code>yth</code>.</li>
+      <li>Weggelaten start = vanaf het begin, weggelaten stop = tot het eind.</li>
+      <li>Stap 2 = elke tweede letter. <b>Negatieve stap = achteruit lopen.</b> <code>woord[::-1]</code> = achterstevoren.</li>
+      <li>Werkwijze: schrijf de indexen uit (bv. 0, 3, 6), zoek daarna pas de letters.</li>
+    </ul>
+    <p class="trap"><strong>Valkuil:</strong> loopt de stap de verkeerde kant op (bv. <code>[-1:1:2]</code>), dan krijg je een <b>lege string</b>.</p>
+  </section>
+
+  <section class="topic">
+    <h3>6. Functies: een recept</h3>
+<pre><code>def dubbel(getal):      # recept opschrijven (nog niet uitvoeren!)
+    return getal * 2    # resultaat teruggeven
+
+print(dubbel(7) + 1)    # dubbel(7) wordt 14, dan 14 + 1 = 15</code></pre>
+    <ul>
+      <li><code>def</code> schrijft het recept alleen op. Pas bij het <b>aanroepen</b> (<code>dubbel(7)</code>) wordt het uitgevoerd.</li>
+      <li>Een aanroep wordt <b>vervangen door wat hij teruggeeft</b>. Alleen wat tussen de haakjes staat gaat de functie in.</li>
+      <li><code>return</code> stopt de functie <b>meteen</b>.</li>
+      <li>Komt een functie nooit bij een <code>return</code>? Dan geeft hij <code>None</code> terug (= niks).</li>
+    </ul>
+    <p class="trap"><strong>Valkuil:</strong> een functie aanroepen vóór de <code>def</code> geeft een fout. Maar binnen een andere functie (zoals <code>main</code>) mag het wel, zolang die pas <b>na</b> alle <code>def</code>s echt uitgevoerd wordt.</p>
+    <ul>
+      <li><b>Invul-trucje:</b> zie je een naam met haakjes? Zoek de <code>def</code>, vul de getallen in, reken de <code>return</code> uit.</li>
+      <li>De <code>x</code> in <code>def function2(x)</code> is alleen de naam van het vakje. <code>function2(y)</code> stopt de waarde van y in dat vakje. Kijk naar de getallen, niet naar de letters.</li>
+      <li>Een <code>return</code> die even ver staat als de <code>if</code> hoort er niet bij en stopt de functie <b>altijd</b>. Alles eronder is dode code.</li>
+    </ul>
+  </section>
+
+  <section class="topic">
+    <h3>7. while: zolang ... blijf herhalen</h3>
+<pre><code>while y &gt;= 0:      # zolang y &gt;= 0 is:
+    print("hoi")      #   doe dit
+    y = y - 1         #   en dit, dan terug naar de check</code></pre>
+    <ul>
+      <li>Volgorde per ronde: <b>check → alle ingesprongen regels → terug naar de check</b>. Stoppen gebeurt alleen bij de check.</li>
+      <li>Maak een tabel en check de <b>laatste ronde</b> extra goed: <code>&gt;=</code> doet bij gelijk nog een ronde, <code>&gt;</code> niet.</li>
+      <li>De waarde kan over de grens heen schieten: <code>x = x * 2</code> met <code>while x &lt; 100</code> eindigt op 128.</li>
+      <li>"Hoe vaak" = tellen. "Wat drukt het af" = kijk wat er in de <code>print</code> staat. Een <code>print</code> na de lus gebeurt één keer.</li>
+    </ul>
+    <p class="trap"><strong>Valkuil:</strong> na een regel met <code>:</code> moet minstens één ingesprongen regel komen, anders werkt het programma niet. En komt x terug op een waarde die je al had? Dan is het een <b>oneindige lus</b> en wordt er nooit iets geprint.</p>
+  </section>
+
+  <section class="topic">
+    <h3>8. for en range: voor elk getal in het rijtje</h3>
+    <ul>
+      <li><code>range(0, 5)</code> = 0, 1, 2, 3, 4. Start doet mee, stop niet (net als slicing).</li>
+      <li><code>for i in range(0, 5):</code> draait precies 5 keer, i is steeds het volgende getal.</li>
+      <li>Schrijf eerst het rijtje op en streep elke ronde af. De foute antwoorden zijn vaak de tussenstanden.</li>
+    </ul>
+  </section>
+
+  <section class="topic">
+    <h3>9. Rekenen: %, += en delen door 0</h3>
+    <ul>
+      <li><code>%</code> = de rest na delen. <code>7 % 2</code> = 1.</li>
+      <li><code>x % 2 == 0</code> → "x is even". <code>getal % x == 0</code> → "x past precies in getal".</li>
+      <li><code>n += 1</code> is kort voor <code>n = n + 1</code>. Ook <code>-=</code> en <code>*=</code>.</li>
+      <li>Kommagetallen schrijf je met een <b>punt</b>: <code>4.0</code>. Na een <code>/</code> blijft x een kommagetal, ook na <code>+ 1</code>.</li>
+    </ul>
+    <p class="trap"><strong>Valkuil:</strong> delen door 0 geeft altijd een fout, ook met <code>%</code>. Let dus op <code>range(0, ...)</code> als er door x gedeeld wordt.</p>
+  </section>
+
+  <section class="topic">
+    <h3>10. Lijsten en not</h3>
+    <ul>
+      <li><code>lis = []</code> is een lege lijst. <code>lis = lis + [x]</code> plakt x achteraan.</li>
+      <li><code>my_list[ix]</code> werkt als indexing bij tekst: ix is de plek, <code>my_list[ix]</code> het getal op die plek.</li>
+      <li><code>not</code> draait waar en niet waar om: <code>not x % 2 == 0</code> → "x is oneven".</li>
+      <li>Lees het in één zin: "ga elk getal langs, oneven → keer 2, even → laten zo".</li>
+    </ul>
+  </section>
+
+  <hr>
+  <h2 id="toets">Oefentoets</h2>
+  <p class="lead">Elke ronde krijg je 20 nieuwe vragen, in dezelfde volgorde als opdracht 1 t/m 20, met andere getallen, woorden en valkuilen. Klik je antwoord voor de uitleg in stappen. Doe eerst de stappen op papier, dan pas klikken.</p>
+
+  <div class="score"><span><span id="ronde" class="hint"></span> · Score: <b id="score">0 / 0</b></span><button class="btn" id="reset" type="button">Nieuwe vragen</button></div>
+
+  <div id="quiz"></div>
+
+  <div class="end" id="end" hidden>
+    <h3 id="endTitle"></h3>
+    <p id="endText" class="lead"></p>
+    <button class="btn" id="again" type="button">Nieuwe vragen</button>
+  </div>
+</div>
+
+<script>
+// ===== Vraaggenerator (Python-semantiek nagebootst) =====
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const show=v=>v===""?"een lege regel":String(v);
+
+function makeOpts(correct, cands, fillers){
+  correct=show(correct);
+  const set=[correct];
+  for(const c of [...cands, ...(fillers||[])]){const s=show(c); if(!set.includes(s)) set.push(s); if(set.length===4) break;}
+  let n=1; while(set.length<4){const f=String(n++*7+3); if(!set.includes(f)) set.push(f);}
+  const o=shuffle(set); return {o, a:o.indexOf(correct)};
+}
+
+function pyslice(s,start,stop,step){
+  const n=s.length; step=step??1;
+  let st,sp;
+  if(step>0){
+    st=start==null?0:(start<0?Math.max(0,start+n):Math.min(start,n));
+    sp=stop==null?n:(stop<0?Math.max(0,stop+n):Math.min(stop,n));
+    let r="",idx=[];for(let i=st;i<sp;i+=step){r+=s[i];idx.push(i)}return {r,idx};
+  } else {
+    st=start==null?n-1:(start<0?Math.max(-1,start+n):Math.min(start,n-1));
+    sp=stop==null?-1:(stop<0?Math.max(-1,stop+n):Math.min(stop,n-1));
+    let r="",idx=[];for(let i=st;i>sp;i+=step){r+=s[i];idx.push(i)}return {r,idx};
+  }
+}
+function explainCmp(a,b){
+  for(let i=0;i<Math.min(a.length,b.length);i++){
+    if(a[i]!==b[i]){
+      const up=(c)=>c>="A"&&c<="Z";
+      let why=`${a[i]} komt ${a[i]<b[i]?"vóór":"ná"} ${b[i]}`;
+      if(up(a[i])!==up(b[i])) why+=" (hoofdletters komen vóór kleine letters)";
+      return {res:a<b, txt:`"${a}" < "${b}"? Letter ${i+1}: ${why} → ${a<b?"waar":"niet waar"}`};
+    }
+  }
+  return {res:a<b, txt:`"${a}" < "${b}"? Begin is gelijk, "${b}" is eerder op → kortere woord komt eerst → ${a<b?"waar":"niet waar"}`};
+}
+
+const WORDS=["Programmeren","Hanzehogeschool","Python","Groningen","Computer","Variabele","Functie","Toetsweek","Studenten"];
+const idxRow=w=>w.split("").map((c,i)=>`${i}=${c}`).join(" ");
+
+const GEN={
+ variabelen(){
+  const a=ri(2,9),k=ri(2,5),op=pick(["+","*"]),a2=ri(10,20);
+  const f=x=>op==="+"?x+k:x*k, b=f(a);
+  return {t:"Variabelen",code:`a = ${a}\nb = a ${op} ${k}\na = ${a2}\nprint(b)`,q:"Wat wordt er geprint?",
+   ...makeOpts(b,[f(a2),a2,a+k*(op==="+"?2:1)]),
+   s:[`a = ${a}`,`b = ${a} ${op} ${k} = ${b} (b onthoudt de waarde)`,`a wordt ${a2}, b verandert niet mee`,`print(b) → ${b}`],
+   w:`${f(a2)} krijg je als je b opnieuw uitrekent met de nieuwe a.`, py:`a = ${a}\nb = a ${op} ${k}\na = ${a2}\nprint(b)`};
+ },
+ delen(){
+  const B=ri(2,6),N=ri(2,9);
+  if(Math.random()<.5){
+   const A=B*N;
+   return {t:"Delen",code:`print(${A} / ${B})`,q:"Wat wordt er geprint?",...makeOpts(`${N}.0`,[`${N}`,`${N+1}`,"Foutmelding"]),
+    s:["/ geeft in Python altijd een kommagetal (float)",`${A} / ${B} = ${N}.0`],w:`Alleen met // krijg je ${N}.`,py:`print(${A} / ${B})`};
+  }
+  const A=B*N+ri(1,B-1);
+  return {t:"Delen",code:`print(${A} // ${B})`,q:"Wat wordt er geprint?",...makeOpts(`${N}`,[`${N}.0`,`${N+1}`,"Foutmelding"]),
+   s:["// deelt en gooit alles achter de komma weg (heel getal)",`${A} / ${B} = ${(A/B).toFixed(2).replace(/0$/,"")}... → ${N}`],w:"// geeft een heel getal, zonder .0.",py:`print(${A} // ${B})`};
+ },
+ wegwijzer(){
+  const t=ri(4,9),d1=ri(1,8),d2=ri(1,6),m=ri(2,3);
+  const x=pick([t+ri(1,6),t-ri(1,3),t]);
+  const br=[[v=>v>t,`x > ${t}`,v=>v-d1,`x - ${d1}`],[v=>v<t,`x < ${t}`,v=>v+d2,`x + ${d2}`],[()=>true,"else",v=>v*m,`x * ${m}`]];
+  let res=x,steps=[`x = ${x}`],chosen;
+  for(let i=0;i<3;i++){const [c,ct,a,at]=br[i];
+    if(i<2){ if(c(x)){res=a(x);steps.push(`${x}${ct.slice(1)}? waar → x = ${at.replace("x",x)} = ${res}`);chosen=i;break;} else steps.push(`${x}${ct.slice(1)}? niet waar`);}
+    else {res=a(x);steps.push(`else → x = ${at.replace("x",x)} = ${res}`);chosen=2;}}
+  steps.push("Wegwijzer klaar, de rest wordt overgeslagen",`x = ${res}`);
+  const alts=br.map(b=>b[2](x)); const chain=chosen===0&&res<t?res+d2:(chosen===0&&res===t?res*m:null);
+  const code=`x = ${x}\nif x > ${t}:\n    x = x - ${d1}\nelif x < ${t}:\n    x = x + ${d2}\nelse:\n    x = x * ${m}`;
+  return {t:"if / elif / else",code,q:"Wat is x aan het eind?",...makeOpts(res,[chain,...alts,x].filter(v=>v!=null)),
+   s:steps,w:"Per wegwijzer wordt maar één route gekozen. Ook als x daarna aan een andere voorwaarde voldoet.",py:code+"\nprint(x)"};
+ },
+ tweeWegwijzers(){
+  const t1=ri(3,7),x0=t1+ri(1,5),d=ri(1,x0-1),x1=x0-d,t2=pick([x1,x1+ri(0,2),x1-1]),m=ri(2,4);
+  let res,steps=[`x = ${x0}`,`Wegwijzer 1: ${x0} > ${t1}? waar → x = ${x0} - ${d} = ${x1}`],V;
+  if(x1<=t2){res=x1*m;V=res;steps.push(`Wegwijzer 2 (nieuwe if!): ${x1} <= ${t2}? waar → x = ${x1} * ${m} = ${res}`,`De elif hoort bij wegwijzer 2 en wordt overgeslagen, ook al is x nu ${res}`);}
+  else {V=x1;res=0;steps.push(`Wegwijzer 2 (nieuwe if!): ${x1} <= ${t2}? niet waar`,`elif: ${x1} == ${V}? waar → x = 0`);}
+  steps.push(`x = ${res}`);
+  const code=`x = ${x0}\nif x > ${t1}:\n    x = x - ${d}\nif x <= ${t2}:\n    x = x * ${m}\nelif x == ${V}:\n    x = 0`;
+  return {t:"Twee wegwijzers",code,q:"Wat is x aan het eind?",...makeOpts(res,[res===0?x1*m:0,x1,x0,x0*m]),
+   s:steps,w:"Een nieuwe if wordt altijd opnieuw gecheckt. Een elif alleen als de if direct erboven niet waar was.",py:code+"\nprint(x)"};
+ },
+ tekst(){
+  const [g1,g2]=pick([["E","M"],["C","N"],["F","S"],["D","K"],["B","P"]]);
+  const pool=["Bram","Emma","Noor","Zoe","Lisa","Sam","anna","Daan","Tom","Ali","Mo","Eva","bas","Kim","Fleur","Sara","Pim","Chris","Dirk","Kees","Mila","Nina","Pieter","emma","Ezra","Felix"];
+  let x=Math.random()<.4?pick(pool.filter(n=>n[0]===g1||n[0]===g2)):pick(pool); if(!x) x=pick(pool);
+  const steps=[],c1=explainCmp(x,g1);steps.push(c1.txt);let g;
+  if(c1.res)g=1;else{const c2=explainCmp(x,g2);steps.push(c2.txt);g=c2.res?2:3;}
+  steps.push(`print groep ${g}`);
+  const code=`x = "${x}"\nif x < "${g1}":\n    print("groep 1")\nelif x < "${g2}":\n    print("groep 2")\nelse:\n    print("groep 3")`;
+  return {t:"Tekst vergelijken",code,q:"Wat wordt er geprint?",...makeOpts(`groep ${g}`,["groep 1","groep 2","groep 3","Foutmelding"]),
+   s:steps,w:"Vergelijk letter voor letter. Gelijk begin? Dan komt het kortere woord eerst. Hoofdletters komen vóór kleine letters.",py:code};
+ },
+ index(){
+  const w=pick(WORDS),n=w.length;
+  let i=Math.random()<.15?pick([n,-n-1]):(Math.random()<.5?ri(0,n-1):-ri(1,n));
+  const ok=i>=-n&&i<n,cor=ok?w.at(i):"Foutmelding";
+  const steps=[`Het woord heeft ${n} letters: indexen 0 t/m ${n-1}, of -1 t/m -${n} van achteren`,idxRow(w)];
+  if(!ok)steps.push(`Index ${i} bestaat niet → IndexError, foutmelding`);
+  else if(i>=0)steps.push(`Van voren tellen vanaf 0: index ${i} = ${cor}`);
+  else steps.push(`Van achteren tellen vanaf -1: index ${i} = ${cor}`);
+  const near=[w.at((i+1)%n),w.at((i-1)%n),w.at(-1),w[0],w.at(i>=0?i-1:i+1)].filter(c=>c);
+  return {t:"Indexing",code:`woord = "${w}"\nprint(woord[${i}])`,q:"Wat wordt er geprint?",...makeOpts(cor,[...near,"Foutmelding"],w.split("")),
+   s:steps,w:i>=0?"Van voren begint tellen bij 0.":"Van achteren begint tellen bij -1, er is geen -0.",py:`woord = "${w}"\nprint(woord[${i}])`};
+ },
+ slice(){
+  const w=pick(WORDS),n=w.length,s=ri(0,n-5),e=s+ri(2,5);
+  const r=pyslice(w,s,e,1);
+  return {t:"Slicing",code:`woord = "${w}"\nprint(woord[${s}:${e}])`,q:"Wat wordt er geprint?",
+   ...makeOpts(r.r,[w.slice(s,e+1),w.slice(s-1<0?0:s-1,e-1),w.slice(s+1,e+1),w.slice(s+1,e)]),
+   s:[idxRow(w),`Start ${s} doet mee, stop ${e} niet → indexen ${r.idx.join(", ")}`,`→ ${r.r}`],w:"Tot, niet tot en met: de stop doet niet mee.",py:`woord = "${w}"\nprint(woord[${s}:${e}])`};
+ },
+ stap(){
+  const w=pick(WORDS),n=w.length,v=ri(0,3);let st,sp,k,txt;
+  if(v===0){st=ri(0,3);sp=ri(st+4,n);k=ri(2,3);txt=`${st}:${sp}:${k}`;}
+  else if(v===1){k=-ri(2,3);st=null;sp=null;txt=`::${k}`;}
+  else if(v===2){k=-ri(2,3);st=-1;sp=ri(0,3);txt=`-1:${sp}:${k}`;}
+  else {k=ri(2,3);st=-1;sp=ri(0,3);txt=`-1:${sp}:${k}`;}
+  const r=pyslice(w,st,sp,k);
+  const flip=pyslice(w,st,sp,-k).r, plain=pyslice(w,null,null,Math.abs(k)).r, back=pyslice(w,null,null,-1).r;
+  const steps=[idxRow(w)];
+  if(r.idx.length===0)steps.push(`Start bij index ${st<0?st+n:st}, stap ${k} loopt ${k>0?"naar rechts":"naar links"}, maar de stop ligt de andere kant op`,"Je komt nooit bij de stop → lege string, er wordt een lege regel geprint");
+  else steps.push(`Start: ${st==null?(k>0?"begin":"laatste letter (index "+(n-1)+")"):st+" (= index "+(st<0?st+n:st)+")"}, stap ${k}${k<0?" (achteruit)":""}`,`Indexen: ${r.idx.join(", ")}${sp!=null?` (stop ${sp} doet niet mee)`:""}`,`→ ${r.r}`);
+  return {t:"Slicing met stap",code:`woord = "${w}"\nprint(woord[${txt}])`,q:"Wat wordt er geprint?",...makeOpts(r.r,[flip,plain,back,""]),
+   s:steps,w:"Schrijf eerst de indexen uit. Klopt de richting van de stap niet met start en stop, dan is het resultaat leeg.",py:`woord = "${w}"\nprint(woord[${txt}])`};
+ },
+ functie(){
+  const nm=pick(["dubbel","keer3","plus5","verdubbel"]),k=ri(2,4),m=ri(2,8),n=ri(1,5),v=ri(0,2);
+  const f=a=>a*k; let call,res,alt,steps;
+  if(v===0){call=`${nm}(${m}) + ${n}`;res=f(m)+n;alt=f(m+n);steps=[`Alleen ${m} gaat de functie in → a = ${m}`,`return ${m} * ${k} = ${f(m)}`,`print(${f(m)} + ${n}) → ${res}`];}
+  else if(v===1){call=`${nm}(${m} + ${n})`;res=f(m+n);alt=f(m)+n;steps=[`Eerst ${m} + ${n} = ${m+n}, dat gaat de functie in → a = ${m+n}`,`return ${m+n} * ${k} = ${res}`,`print(${res})`];}
+  else {call=`${nm}(${m}) - ${n}`;res=f(m)-n;alt=f(m-n);steps=[`Alleen ${m} gaat de functie in → a = ${m}`,`return ${m} * ${k} = ${f(m)}`,`print(${f(m)} - ${n}) → ${res}`];}
+  const code=`def ${nm}(a):\n    return a * ${k}\n\nprint(${call})`;
+  return {t:"Functies",code,q:"Wat wordt er geprint?",...makeOpts(res,[alt,f(m),"None"]),
+   s:steps,w:"Alleen wat tussen de haakjes van de functie staat gaat erin. Een aanroep wordt vervangen door wat hij teruggeeft.",py:code};
+ },
+ returnNone(){
+  const x=ri(2,12);let y=ri(2,12);if(y===x)y++;const v=ri(0,3);const ERR="Het programma werkt niet";
+  let code,res,steps,w;
+  if(v===0){code=`print(function(${x}, ${y}))\n\n\ndef function(x, y):\n    if x <= y:\n        return x\n    return y`;res=ERR;
+   steps=["Python leest van boven naar beneden","Regel 1 roept function aan, maar die bestaat nog niet","NameError → het programma werkt niet"];w="Eerst de def, dan pas aanroepen.";}
+  else if(v===1){code=`def function(x, y):\n    if x > y:\n        return x\n    return y\n\n\nprint(function(${x}, ${y}))`;res=Math.max(x,y);
+   steps=[`x = ${x}, y = ${y}`,`${x} > ${y}? ${x>y?"waar → return x, functie stopt meteen":"niet waar → door naar return y"}`,`print ${res}`];w="return y staat niet onder de if, dus wordt bereikt als de if niet waar is.";}
+  else {const gt=v===2;code=`def main():\n    temp = function(${x}, ${y})\n    print(temp)\n\n\ndef function(x, y):\n    if x ${gt?">":"<"} y:\n        return x\n\n\nmain()`;
+   const c=gt?x>y:x<y;res=c?x:"None";
+   steps=["De defs worden alleen opgeschreven","main() wordt pas onderaan uitgevoerd, dan bestaat function al → werkt",`x = ${x}, y = ${y}. ${x} ${gt?">":"<"} ${y}? ${c?"waar → return "+x:"niet waar"}`,...(c?[]:["Geen return meer → de functie geeft None terug"]),`temp = ${res} → print ${res}`];
+   w="Een functie zonder bereikte return geeft None. En main() mag functies gebruiken die verderop staan, zolang main() pas na alle defs draait.";}
+  return {t:"Functies en return",code,q:"Wat wordt er geprint?",...makeOpts(res,[x,y,"None",ERR]),s:steps,w,py:code};
+ }
+};
+const ORDER=["variabelen","delen","wegwijzer","tweeWegwijzers","tekst","index","slice","stap","functie","returnNone"];
+var makeRound=function(){
+  const extra=shuffle(["wegwijzer","tweeWegwijzers","tekst","stap","functie","returnNone","index"]).slice(0,2);
+  return [...ORDER,...extra].map(k=>GEN[k]());
+}
+
+// ===== Extra generators: opdracht 11 t/m 20 =====
+const pyNum=(v,f)=>f?(Number.isInteger(v)?v+".0":String(v)):String(v);
+const pyList=a=>"["+a.join(", ")+"]";
+const indent=c=>c.split("\n").map(l=>"    "+l).join("\n");
+const countPy=(code,word)=>`import io, contextlib\n_f = io.StringIO()\nwith contextlib.redirect_stdout(_f):\n${indent(code)}\nprint(_f.getvalue().count("${word}"))`;
+const ERR="Het programma werkt niet";
+
+Object.assign(GEN,{
+ functieKeten(){
+  const a=ri(2,9);let b=ri(2,9);if(b===a)b++;const k=ri(1,3),op=pick(["*","+"]);
+  const f2=v=>op==="*"?v*v:v+k, f2t=v=>op==="*"?`${v} * ${v}`:`${v} + ${k}`;
+  const small=Math.min(a,b),big=Math.max(a,b),res=f2(small);
+  const code=`def main():\n    temp = function1(${a}, ${b})\n    print(temp)\n\n\ndef function1(x, y):\n    if x < y:\n        return function2(x)\n    return function2(y)\n\n\ndef function2(x):\n    return ${op==="*"?"x * x":"x + "+k}\n\n\nmain()`;
+  return {t:"Functies die functies aanroepen",code,q:"Wat wordt er geprint?",...makeOpts(res,[f2(big),small,big,"None"]),
+   s:[`main() → function1(${a}, ${b}): x = ${a}, y = ${b}`,`${a} < ${b}? ${a<b?"waar → return function2(x), dus function2("+a+")":"niet waar → return function2(y), dus function2("+b+")"}`,`function2(${small}): het vakje heet daar x, x = ${small} → return ${f2t(small)} = ${res}`,`temp = ${res} → print ${res}`],
+   w:"Invul-trucje: zoek de def, vul de getallen in, reken de return uit. De x in function2 is een ander vakje dan de x in function1.",py:code};
+ },
+ vroegeReturn(){
+  const x=ri(3,20);let y=ri(3,20);if(y===x)y++;
+  const even=x%2===0,res=even?pyNum(x/2,true):String(x);
+  const code=`def function1(x, y):\n    if x % 2 == 0:\n        x = x / 2\n    return x\n    if x < y:\n        return x\n    return y\n\n\nprint(function1(${x}, ${y}))`;
+  return {t:"return en inspringen",code,q:"Wat wordt er geprint?",...makeOpts(res,[even?String(x/2):pyNum(x,true),y,"None",even?x:Math.floor(x/2)]),
+   s:[`x = ${x}, y = ${y}`,`${x} % 2 = ${x%2} → ${even?"even → x = "+x+" / 2 = "+res:"oneven → overslaan"}`,"return x staat even ver als de if → wordt altijd uitgevoerd → functie stopt",`De tweede if wordt nooit bereikt → print ${res}`],
+   w:"Een return die niet onder een if is ingesprongen, stopt de functie altijd. En / geeft een kommagetal.",py:code};
+ },
+ whileTellen(){
+  const y0=ri(3,8),d=pick([1,1,2]),k=pick([0,0,1]),ge=Math.random()<.6,op=ge?">=":">";
+  let y=y0,c=0,rows=[];while(ge?y>=k:y>k){c++;rows.push(y);y-=d;}
+  const code=`def function(y):\n    while y ${op} ${k}:\n        print("hoi")\n        y = y - ${d}\n\n\nfunction(${y0})`;
+  return {t:"while tellen",code,q:"Hoe vaak drukt dit programma hoi af?",...makeOpts(c,[c-1,c+1,c+2,ERR]),
+   s:[`Check vóór elke ronde: y ${op} ${k}?`,`y is achtereenvolgens ${rows.join(", ")} → steeds waar → ${c} keer hoi`,`Daarna y = ${y}: ${y} ${op} ${k}? niet waar → stop`],
+   w:ge?"Let op >=: ook bij gelijk wordt er nog een ronde gedaan.":"Let op >: bij gelijk stopt de lus al.",py:countPy(code,"hoi")};
+ },
+ whileVerdubbel(){
+  const a=ri(2,9),m=pick([2,3]),lim=pick([50,100,200]);
+  let x=a,vals=[a];while(x<lim){x*=m;vals.push(x);}
+  const broken=Math.random()<.3;
+  const code=`x = ${a}\nwhile x < ${lim}:\n${broken?"":"    "}x = x * ${m}\n\nprint(x)`;
+  const res=broken?ERR:x;
+  return {t:"while en inspringen",code,q:"Wat drukt dit programma af?",...makeOpts(res,[broken?x:ERR,vals[vals.length-2],lim,a,x]),
+   s:broken?["Na while ...: moet minstens één ingesprongen regel komen",`x = x * ${m} staat even ver als de while → IndentationError`,"Het programma werkt niet"]
+    :[`x: ${vals.join(" → ")}`,`${x} < ${lim}? niet waar → lus stopt`,`print(x) staat buiten de lus → één keer: ${x}`],
+   w:broken?"Leg je pen langs de while: niks staat rechts ervan, dus fout.":"De lus stopt pas als x de grens voorbij is, dus x schiet erover heen.",py:code};
+ },
+ whileN(){
+  const a=ri(2,6),lim=pick([100,150,200]);let x=a,n=2,rows=[];
+  while(x<lim){rows.push(`x = ${x} * ${n} = ${x*n}, n wordt ${n+1}`);x*=n;n++;}
+  let y=a;while(y<lim)y*=2;
+  const code=`x = ${a}\nn = 2\nwhile x < ${lim}:\n    x = x * n\n    n += 1\nprint(x)`;
+  return {t:"while met +=",code,q:"Wat drukt dit programma af?",...makeOpts(x,[y,x/(n-1),x*n,ERR]),
+   s:[...rows,`${x} < ${lim}? niet waar → print ${x}`,"n += 1 betekent n = n + 1"],
+   w:"n wordt elke ronde 1 groter, dus je vermenigvuldigt steeds met een groter getal.",py:code};
+ },
+ forRange(){
+  const X=pick([50,80,100]),s=pick([0,1]),e=s+ri(3,5),v=ri(0,1);let x=X,n=1,rows=[],xs=[];
+  const upd=(n,i)=>v?n*i+1:n+i, ut=v?"n * i + 1":"n + i";
+  for(let i=s;i<e;i++){const nx=x-n,nn=upd(n,i);rows.push(`i = ${i}: x = ${x} - ${n} = ${nx}, n = ${v?n+" * "+i+" + 1":n+" + "+i} = ${nn}`);x=nx;n=nn;xs.push(x);}
+  const extra=x-n;
+  const code=`x = ${X}\nn = 1\nfor i in range(${s}, ${e}):\n    x = x - n\n    n = ${ut}\nprint(x)`;
+  return {t:"for en range",code,q:"Wat drukt dit programma af?",...makeOpts(x,[xs[xs.length-2],extra,xs[xs.length-3],X-n]),
+   s:[`range(${s}, ${e}) = ${Array.from({length:e-s},(_,j)=>s+j).join(", ")} (stop doet niet mee)`,...rows,`print ${x}`],
+   w:"Schrijf eerst het rijtje van range op en streep elke ronde af. De foute antwoorden zijn vaak tussenstanden.",py:code};
+ },
+ whileIfElse(){
+  const st=ri(30,130),lim=pick([10,10,15]);let x=st,f=false,vals=[pyNum(x,f)];
+  while(x>lim){if(x%2===0){x=x/2;f=true;}else{x=x+1;}vals.push(pyNum(x,f));}
+  const res=pyNum(x,f);
+  const code=`x = ${st}\nwhile x > ${lim}:\n    if x % 2 == 0:\n        x = x / 2\n    else:\n        x = x + 1\nprint(x)`;
+  return {t:"while met if/else",code,q:"Wat drukt dit programma af?",...makeOpts(res,[String(x),vals[vals.length-2],pyNum(x+1,f),lim]),
+   s:["Zolang x > "+lim+": even → delen door 2, oneven → plus 1",`x: ${vals.join(" → ")}`,`${res} > ${lim}? niet waar → print ${res}`,"Na een / blijft x een kommagetal, ook na + 1"],
+   w:"Staat er een / in de code? Dan eindigt je antwoord meestal op .0.",py:code};
+ },
+ delers(){
+  const N=pick([12,18,20,24,30,36]),zero=Math.random()<.3,s=zero?0:1,e=pick([N,N+1]);
+  const divs=[];for(let x=1;x<e;x++)if(N%x===0)divs.push(x);
+  const all=[];for(let x=1;x<=N;x++)if(N%x===0)all.push(x);
+  const res=zero?ERR:pyList(divs);
+  const code=`lis = []\nfor x in range(${s}, ${e}):\n    if ${N} % x == 0:\n        lis = lis + [x]\nprint(lis)`;
+  const alt=e===N+1?pyList(all.slice(0,-1)):pyList(all);
+  return {t:"Lijsten en %",code,q:"Wat drukt dit programma af?",...makeOpts(res,[zero?pyList(divs):ERR,alt,pyList([0,...divs]),pyList(divs.filter((_,j)=>j!==2))]),
+   s:zero?["range begint bij 0 → eerste ronde x = 0",`${N} % 0 = delen door 0 → ZeroDivisionError`,"Het programma werkt niet"]
+    :[`range(${s}, ${e}) = ${s} t/m ${e-1}`,`${N} % x == 0 betekent: x past precies in ${N}`,`Die getallen worden achter aan de lijst geplakt: ${pyList(divs)}`],
+   w:zero?"Delen door 0 geeft altijd een fout, ook met %.":"Let op of de stop van range het getal zelf nog meeneemt.",py:code};
+ },
+ lijstNot(){
+  const L=Array.from({length:ri(5,6)},()=>ri(1,9)),k=pick([2,3,10]);
+  const odd=v=>v%2!==0,res=L.map(v=>odd(v)?v*k:v),swap=L.map(v=>odd(v)?v:v*k),allk=L.map(v=>v*k);
+  const code=`my_list = ${pyList(L)}\nresult = []\nfor ix in range(0, ${L.length}):\n    if not my_list[ix] % 2 == 0:\n        result = result + [my_list[ix] * ${k}]\n    else:\n        result = result + [my_list[ix]]\nprint(result)`;
+  return {t:"Lijsten en not",code,q:"Wat drukt dit programma af?",...makeOpts(pyList(res),[pyList(swap),pyList(allk),pyList(L)]),
+   s:["In gewone woorden: ga elk getal langs. Oneven (not even) → keer "+k+". Even → laten zoals het is.",...L.map(v=>`${v}: ${odd(v)?"oneven → "+v*k:"even → "+v}`),`→ ${pyList(res)}`],
+   w:"not draait om: not ... % 2 == 0 betekent oneven.",py:code};
+ },
+ oneindig(){
+  const st=ri(1,9),lim=ri(5,20);let x=st,f=false,lis=[],it=0,rows=[];
+  while(x<lim&&it<60){it++;if(x%2!==0){lis.push(pyNum(2*x,f));rows.push(`x = ${pyNum(x,f)}: oneven → lijst + ${pyNum(2*x,f)}, x = ${pyNum(x*3+1,f)}`);x=x*3+1;}else{lis.push(pyNum(x,f));rows.push(`x = ${pyNum(x,f)}: even → lijst + ${pyNum(x,f)}, x = ${pyNum(x/2,true)}`);x=x/2;f=true;}}
+  const inf=it>=60,res=inf?ERR:pyList(lis);
+  const code=`lis = []\nx = ${st}\nwhile x < ${lim}:\n    if not x % 2 == 0:\n        lis = lis + [2 * x]\n        x = x * 3 + 1\n    else:\n        lis = lis + [x]\n        x = x / 2\nprint(lis)`;
+  const first=pyList(lis.slice(0,Math.min(5,lis.length)).map(s=>s.replace(".0","")));
+  return {t:"Oneindige lus",code,q:"Wat drukt dit programma af?",...makeOpts(res,[inf?first:ERR,pyList(lis.slice(0,3)),pyList(lis.slice(0,-1)),first]),
+   s:inf?[...rows.slice(0,6),"... x blijft 1 → 4 → 2 → 1 rondgaan en komt nooit op "+lim+" of hoger","Oneindige lus: print(lis) wordt nooit bereikt → het programma werkt niet"]
+    :[...rows,`x = ${pyNum(x,f)}: ${pyNum(x,f)} < ${lim}? niet waar → stop`,`print ${res}`],
+   w:inf?"Komt x terug op een waarde die je al had? Dan stopt de lus nooit.":"Let op de .0 na een deling, en reken door tot de check nee zegt.",py:code};
+ }
+});
+const ORDER20=["variabelen","delen","wegwijzer","tweeWegwijzers","tekst","index","slice","stap","functie","returnNone","functieKeten","vroegeReturn","whileTellen","whileVerdubbel","whileN","forRange","whileIfElse","delers","lijstNot","oneindig"];
+makeRound=function(){return ORDER20.map(k=>GEN[k]());};
+
+const L="abcd", quiz=document.getElementById("quiz");
+let Q=[], answered=0, correct=0, round=0;
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function render(){
+  Q=makeRound(); round++; answered=0; correct=0; upd();
+  document.getElementById("ronde").textContent="Ronde "+round;
+  document.getElementById("end").hidden=true;
+  quiz.innerHTML="";
+  Q.forEach((it,i)=>{
+    const el=document.createElement("article"); el.className="q";
+    el.innerHTML=`<h3>Vraag ${i+1}<span>${it.t}</span></h3>
+      <pre><code>${esc(it.code)}</code></pre><p>${it.q}</p>
+      <div class="opts">${it.o.map((o,j)=>`<button type="button" class="opt" id="r${round}q${i}o${j}" data-j="${j}"><span class="l">${L[j]}.</span><span>${esc(o)}</span></button>`).join("")}</div>
+      <div class="fb" hidden></div>`;
+    el.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>choose(el,it,+b.dataset.j)));
+    quiz.appendChild(el);
+  });
+}
+function choose(el,it,j){
+  const btns=el.querySelectorAll(".opt"); btns.forEach(b=>b.disabled=true);
+  const ok=j===it.a; answered++; if(ok) correct++;
+  btns[it.a].classList.add("good"); if(!ok) btns[j].classList.add("bad");
+  const fb=el.querySelector(".fb"); fb.hidden=false; fb.className="fb "+(ok?"ok":"no");
+  fb.innerHTML=`<p class="verdict">${ok?"Goed!":"Niet goed. Het antwoord is "+L[it.a]+": "+esc(it.o[it.a])}</p>
+    <ol>${it.s.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>
+    ${ok?"":`<p class="hint">${esc(it.w)}</p>`}`;
+  upd();
+  if(answered===Q.length){
+    document.getElementById("end").hidden=false;
+    document.getElementById("endTitle").textContent=`Klaar: ${correct} van de ${Q.length} goed`;
+    document.getElementById("endText").textContent = correct===Q.length
+      ? "Alles goed. Klik op Nieuwe vragen voor een volgende ronde met andere getallen en woorden."
+      : "Kijk bij elke foute vraag welke stap je oversloeg, lees dat stuk van de samenvatting en doe daarna een nieuwe ronde.";
+  }
+}
+function upd(){document.getElementById("score").textContent=`${correct} / ${answered}`}
+const again=()=>{render();document.getElementById("toets").scrollIntoView()};
+document.getElementById("reset").addEventListener("click",again);
+document.getElementById("again").addEventListener("click",again);
+render();
+</script>
+
+</body>
+</html>
